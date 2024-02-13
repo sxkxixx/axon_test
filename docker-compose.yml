@@ -1,0 +1,15 @@
+version: "2.1"
+
+services:
+  backend:
+    build: ./src
+    ports:
+      - "8000:8000"
+    networks:
+      backend-database:
+
+  postgres:
+    image: postgres:12
+
+networks:
+  backend-database:
