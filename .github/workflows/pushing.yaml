@@ -2,7 +2,10 @@ name: Python App Run Pytest
 on:
   push:
     branches:
-      - "**"
+      - master
+  pull_request:
+    branches:
+      - master
 jobs:
   testing:
     strategy:
@@ -24,4 +27,16 @@ jobs:
       - name: Run pytest
         run: pytest
 
+  release:
+    needs: [ testing ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: test
+          password: test
 
+      - name: Pushing Docker Image
+        id: docker_build
+        uses: docker/build-push-action@v2
