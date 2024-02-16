@@ -12,7 +12,7 @@ __all__ = [
 class DatabaseConfig:
     # Database config
     POSTGRES_DB: str = os.getenv('POSTGRES_DB', 'postgres')
-    POSTGRES_HOST: str = os.getenv('POSTGRES_HOST', 'localhost')
+    POSTGRES_HOST: str = os.getenv('POSTGRES_HOST', 'postgres')
     POSTGRES_PORT: int = int(os.getenv('POSTGRES_PORT', 5432))
-    POSTGRES_USER: str = os.getenv('POSTGRES_USER', 'root')
-    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', '')
+    POSTGRES_USER: str = os.getenv('POSTGRES_USER', 'postgres')
+    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
