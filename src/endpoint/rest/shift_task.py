@@ -21,8 +21,8 @@ shift_task_repository = ShiftTaskRepository()
 async def create_task(
         tasks: List[ShiftTaskRequestDTO],
 ) -> List[ShiftTaskResponseDTO]:
-    session = ASYNC_CONTEXT_SESSION.get()
-    created_tasks_list = []
+    session: AsyncSession = ASYNC_CONTEXT_SESSION.get()
+    created_tasks_list: List[ShiftTaskResponseDTO] = []
     async for created_task in shift_task_repository.create_shift_tasks(session, tasks):
         created_tasks_list.append(
             ShiftTaskResponseDTO.model_validate(created_task, from_attributes=True)
@@ -36,7 +36,7 @@ async def create_task(
 async def get_task_by_id(
         _id: int,
 ) -> Optional[ShiftTaskResponseDTO]:
-    session = ASYNC_CONTEXT_SESSION.get()
+    session: AsyncSession = ASYNC_CONTEXT_SESSION.get()
     shift_task: Optional[ShiftTask] = await shift_task_repository.get_shift_task(
         session, ShiftTask.id == _id)
     if not shift_task:
@@ -50,7 +50,7 @@ async def update_shift_task(
         _id: int,
         task: ShiftTaskEditRequestDTO,
 ) -> ShiftTaskResponseDTO:
-    session = ASYNC_CONTEXT_SESSION.get()
+    session: AsyncSession = ASYNC_CONTEXT_SESSION.get()
     updated_shift_task: Optional[ShiftTask] = await shift_task_repository.update_shift_task(
         session, _id, **task.model_dump(exclude_none=True)
     )

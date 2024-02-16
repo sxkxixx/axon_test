@@ -7,12 +7,12 @@ from sqlalchemy.exc import DatabaseError
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     AsyncSession,
-    async_sessionmaker
+    async_sessionmaker, AsyncEngine
 )
 
 from infrastructure.config import DatabaseConfig
 
-DATABASE_URL = (
+DATABASE_URL: str = (
     f'postgresql+asyncpg://'
     f'{DatabaseConfig.POSTGRES_USER}'
     f':{DatabaseConfig.POSTGRES_PASSWORD}'
@@ -21,7 +21,7 @@ DATABASE_URL = (
     f'/{DatabaseConfig.POSTGRES_DB}'
 )
 
-async_engine = create_async_engine(DATABASE_URL)
+async_engine: AsyncEngine = create_async_engine(DATABASE_URL)
 
 async_session = async_sessionmaker(
     async_engine,

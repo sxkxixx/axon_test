@@ -21,9 +21,6 @@ class Base(DeclarativeBase):
     metadata = metadata
 
 
-# TODO: Важно: пара НомерПартии и ДатаПартии всегда уникальна! Если уже существует какая-то партия
-#  с аналогичным номером партии и датой партии, мы должны ее перезаписать.
-#  Done ✅
 class ShiftTask(Base):
     __tablename__ = 'shift_tasks'
     __table_args__ = (

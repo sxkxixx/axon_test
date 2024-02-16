@@ -14,6 +14,10 @@ class ProductService:
             shift_task_repository: ShiftTaskRepository,
             product_repository: ProductRepository,
     ):
+        """
+        :param shift_task_repository: Репозиторий для ShiftTask
+        :param product_repository: Репозиторий для Product
+        """
         self.shift_task_repository = shift_task_repository
         self.product_repository = product_repository
 
@@ -22,6 +26,11 @@ class ProductService:
             session: AsyncSession,
             products: List[ProductRequestDTO]
     ) -> AsyncGenerator[Product, None]:
+        """
+        Генератор для создания списка продукции.
+        Если продукция не была создана (метод create_product вернул None), то
+        генератор не возвращает значение
+        """
         for product in products:
             product = await self.create_product(session, product)
             if product:
@@ -32,6 +41,10 @@ class ProductService:
             session: AsyncSession,
             product: ProductRequestDTO
     ) -> Optional[Product]:
+        """
+        Создаёт продукцию и возвращает запись,
+        возвращает None если нет записи ShiftTask с указанными batch_date и batch_number
+        """
         shift_task: Optional[ShiftTask] = await self.shift_task_repository.get_shift_task(
             session,
             ShiftTask.batch_date == product.batch_date,

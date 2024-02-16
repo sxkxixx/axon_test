@@ -11,14 +11,17 @@ from infrastructure.database.models import ShiftTask
 class ShiftTaskRepository:
     @staticmethod
     def insert_statement(**kwargs) -> Executable:
+        """INSERT запрос"""
         return insert(ShiftTask).values(**kwargs).returning(ShiftTask)
 
     @staticmethod
     def update_statement(*filters, **values_set) -> Executable:
+        """Update запрос с фильтрами"""
         return update(ShiftTask).where(*filters).values(**values_set).returning(ShiftTask)
 
     @staticmethod
     def select_statement(*filters) -> Executable:
+        """Простой SELECT запрос с фильтрами"""
         return select(ShiftTask).where(*filters)
 
     async def create_shift_tasks(
@@ -93,6 +96,8 @@ class ShiftTaskRepository:
             filter_model: ShiftTaskFilterSchema,
             *, limit: int, offset: int
     ) -> AsyncGenerator[ShiftTask, None]:
+        """Метод селектит выборку из сменных задач и фильтрует по
+        тем фильтрам из ShiftTaskFilterSchema, которые не null"""
         statement: Executable = (
             select(ShiftTask)
             .filter_by(**filter_model.model_dump(exclude_none=True))
