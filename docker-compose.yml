@@ -3,13 +3,31 @@ version: "2.1"
 services:
   backend:
     build: ./src
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
+    expose:
+      - 8000
+    env_file:
+      - .env.backend.example
+    networks:
+      backend-database:
+    depends_on:
+      - database
+
+  database:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.database.example
     networks:
       backend-database:
 
-  postgres:
-    image: postgres:12
-
 networks:
   backend-database:
+
+volumes:
+  postgres_data:
