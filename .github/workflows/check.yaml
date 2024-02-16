@@ -2,7 +2,7 @@ name: Python App Run Pytest
 on:
   push:
     branches:
-      - "master"
+      - "test-branch"
 jobs:
   testing:
     strategy:
@@ -39,7 +39,7 @@ jobs:
         run: pytest
         env:
           POSTGRES_DB: postgres
-          POSTGRES_HOST: postgres
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
