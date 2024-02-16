@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class ShiftTaskRequestDTO(BaseModel):
@@ -42,14 +42,17 @@ class ShiftTaskRequestDTO(BaseModel):
     shift_end_date: datetime = Field(..., validation_alias='ДатаВремяОкончанияСмены')
 
 
-class ShiftTaskEditRequestDTO(BaseModel):
-    is_closed: Optional[bool] = False
+class ShiftTaskFilterSchema(BaseModel):
+    is_closed: Optional[bool] = None
+    batch_number: Optional[int] = None
+    batch_date: Optional[date] = None
+
+
+class ShiftTaskEditRequestDTO(ShiftTaskFilterSchema):
     view_shift_task: Optional[str] = None
     line: Optional[str] = None
     working_shift: Optional[str] = None
     brigade: Optional[str] = None
-    batch_number: Optional[int] = None
-    batch_date: Optional[date] = None
     nomenclature: Optional[str] = None
     csn_code: Optional[str] = None
     distribution_center_id: Optional[str] = None

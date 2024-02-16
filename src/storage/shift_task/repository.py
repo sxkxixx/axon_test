@@ -4,7 +4,7 @@ from typing import List, Optional, AsyncGenerator
 from sqlalchemy import select, insert, update, Executable
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dto.shift_task import ShiftTaskRequestDTO
+from dto.shift_task import ShiftTaskRequestDTO, ShiftTaskFilterSchema
 from infrastructure.database.models import ShiftTask
 
 
@@ -86,3 +86,17 @@ class ShiftTaskRepository:
         else:
             values_set.update({'closed_at': None})
         return await session.scalar(self.update_statement(*filters, **values_set))
+
+    async def select_shift_tasks(
+            self,
+            session: AsyncSession,
+            filter_model: ShiftTaskFilterSchema,
+            *, limit: int, offset: int
+    ) -> AsyncGenerator[ShiftTask, None]:
+        statement: Executable = (
+            select(ShiftTask)
+            .filter_by(**filter_model.model_dump(exclude_none=True))
+            .offset(offset).limit(limit)
+        )
+        for shift_task in await session.scalars(statement):
+            yield shift_task

@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
 
+from endpoint.rest import product
 from endpoint.rest import shift_task
 from infrastructure.database.models import metadata
 from infrastructure.database.session import async_engine
@@ -16,14 +17,10 @@ async def database_lifespan(_app: FastAPI):
         await connect.run_sync(metadata.drop_all)
 
 
-def _include_routers(_app: FastAPI, *routers: APIRouter) -> None:
-    for router in routers:
-        _app.include_router(router)
-
-
 def _create_app() -> FastAPI:
     _app = FastAPI(lifespan=database_lifespan)
     _app.include_router(shift_task.router)
+    _app.include_router(product.router)
     return _app
 
 

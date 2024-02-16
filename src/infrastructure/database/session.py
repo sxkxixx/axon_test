@@ -44,7 +44,7 @@ def in_transaction(func: Callable[[Any], Awaitable[Any]]) -> Callable:
             result: Any = await func(*args, **kwargs)
             await session.commit()
             return result
-        except (DatabaseError, HTTPException) as e:
+        except DatabaseError as e:
             await session.rollback()
             raise HTTPException(status_code=500, detail=str(e))
         except HTTPException as http_exception:

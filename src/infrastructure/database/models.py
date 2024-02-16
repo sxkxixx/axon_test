@@ -1,14 +1,15 @@
 from datetime import date, datetime
-from typing import TypeVar
+from typing import List
 
 import sqlalchemy
 from sqlalchemy import MetaData, UniqueConstraint
-from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
+from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 
 __all__ = [
     'metadata',
-    'Base', 'Entity',
-    'ShiftTask'
+    'Base',
+    'ShiftTask',
+    'Product'
 ]
 
 metadata = MetaData()
@@ -20,11 +21,9 @@ class Base(DeclarativeBase):
     metadata = metadata
 
 
-Entity = TypeVar('Entity', bound=Base)
-
-
 # TODO: Важно: пара НомерПартии и ДатаПартии всегда уникальна! Если уже существует какая-то партия
 #  с аналогичным номером партии и датой партии, мы должны ее перезаписать.
+#  Done ✅
 class ShiftTask(Base):
     __tablename__ = 'shift_tasks'
     __table_args__ = (
@@ -45,3 +44,18 @@ class ShiftTask(Base):
     shift_start_date: Mapped[datetime] = mapped_column(sqlalchemy.DateTime)
     shift_end_date: Mapped[datetime] = mapped_column(sqlalchemy.DateTime)
     closed_at: Mapped[datetime] = mapped_column(sqlalchemy.DateTime, nullable=True)
+
+    products: Mapped[List['Product']] = relationship('Product', back_populates='shift_task')
+
+
+class Product(Base):
+    __tablename__ = 'products'
+
+    product_id: Mapped[str] = mapped_column(sqlalchemy.String(length=32), primary_key=True)
+    shift_task_id: Mapped[int] = mapped_column(
+        sqlalchemy.ForeignKey('shift_tasks.id', ondelete='CASCADE')
+    )
+    is_aggregated: Mapped[bool] = mapped_column(sqlalchemy.Boolean, default=False)
+    aggregated_at: Mapped[datetime] = mapped_column(sqlalchemy.DateTime, nullable=True)
+
+    shift_task: Mapped['ShiftTask'] = relationship('ShiftTask', back_populates='products')
